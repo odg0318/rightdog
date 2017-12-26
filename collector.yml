@@ -1,7 +1,0 @@
-coinone:
-  enabled: true
-  interval: 10s
-  currencies:
-   - btc
-   - xrp
-   - eth
