@@ -9,9 +9,8 @@ type Config struct {
 }
 
 type CoinoneConfig struct {
-	Enabled    bool     `yaml:"enabled"`
-	Interval   string   `yaml:"interval"`
-	Currencies []string `yaml:"currencies"`
+	Enabled  bool   `yaml:"enabled"`
+	Interval string `yaml:"interval"`
 }
 
 func NewConfig(data []byte) (*Config, error) {

@@ -1,2 +1,2 @@
-*.lock
+Gopkg.lock
 *.swp
