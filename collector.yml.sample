@@ -1,0 +1,17 @@
+coinone:
+  enabled: true
+  interval: 10s
+
+korbit:
+  enabled: true
+  interval: 10s
+  api_key: << korbit api key >> 
+  api_secret: << korbit api secret >> 
+  email: << korbit email >> 
+  password: << korbit password >> 
+  currencies:
+   - btc_krw
+   - etc_krw
+   - eth_krw
+   - xrp_krw
+   - bch_krw
