@@ -2,7 +2,10 @@ package collector
 
 import (
 	"encoding/json"
+	"fmt"
+	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 
@@ -39,7 +42,20 @@ func (r coinoneTickerValueRaw) GetRate() float64 {
 }
 
 type CoinoneCollector struct {
-	cfg *Config
+	cfg    *Config
+	logger *log.Logger
+	name   string
+}
+
+func (c *CoinoneCollector) Run() {
+	for true {
+		err := c.Collect()
+		if err != nil {
+			c.logger.Printf("%+v\n", err)
+		}
+
+		time.Sleep(c.cfg.Coinone.GetInterval())
+	}
 }
 
 func (c *CoinoneCollector) Collect() error {
@@ -75,7 +91,7 @@ func (c *CoinoneCollector) Collect() error {
 
 func (c *CoinoneCollector) addPoint(currency string, v coinoneTickerValueRaw, influxClient *influx.InfluxClient) {
 	tags := map[string]string{}
-	tags["exchange"] = "coinone"
+	tags["exchange"] = c.name
 	tags["currency"] = currency
 
 	fields := map[string]interface{}{}
@@ -104,5 +120,11 @@ func (c *CoinoneCollector) collectTicker() (*coinoneTickerRaw, error) {
 }
 
 func NewCoinoneCollector(cfg *Config) (Collector, error) {
-	return &CoinoneCollector{cfg}, nil
+	name := "coinone"
+
+	return &CoinoneCollector{
+		cfg:    cfg,
+		logger: log.New(os.Stdout, fmt.Sprintf("[%s] ", name), log.LstdFlags),
+		name:   name,
+	}, nil
 }

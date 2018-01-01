@@ -5,9 +5,9 @@ coinone:
 korbit:
   enabled: true
   interval: 10s
-  api_key: << korbit api key >> 
-  api_secret: << korbit api secret >> 
-  email: << korbit email >> 
+  client_id: << korbit client id >> 
+  client_secret: << korbit client secret >> 
+  username: << korbit email >> 
   password: << korbit password >> 
   currencies:
    - btc_krw
