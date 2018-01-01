@@ -1,0 +1,41 @@
+version: "3"
+
+services:
+  collector:
+    build:
+      context: .
+      dockerfile: ./docker/collector/Dockerfile
+    restart: always
+    command: ["collector"]
+    depends_on:
+     - influxdb
+    links:
+     - influxdb
+    networks:
+     - collector
+
+  influxdb:
+    image: library/influxdb:1.4.2-alpine
+    restart: always
+    volumes:
+     - ./data/influxdb:/var/lib/influxdb
+    networks:
+     - collector
+
+  grafana:
+    image: grafana/grafana:4.6.3
+    restart: always
+    ports:
+     - 8080:3000
+    volumes:
+     - ./data/grafana:/var/lib/grafana
+    networks:
+     - collector
+
+networks:
+  collector:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+       - subnet: 10.100.0.0/24
