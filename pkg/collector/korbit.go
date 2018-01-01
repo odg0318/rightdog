@@ -9,6 +9,8 @@ import (
 	"os"
 	"strconv"
 	"time"
+
+	"rightdog/pkg/collector/influx"
 )
 
 type korbitAccessTokenRaw struct {
@@ -40,21 +42,46 @@ func (c *KorbitCollector) Run() {
 		if err != nil {
 			c.logger.Printf("%+v\n", err)
 		}
-		time.Sleep(c.cfg.Korbit.GetInterval())
+
+		c.logger.Printf("updated.\n")
+		time.Sleep(c.cfg.Korbit.Interval)
 	}
 }
 
 func (c *KorbitCollector) Collect() error {
-	for _, currency := range c.cfg.Korbit.Currencies {
-		tickerRaw, err := c.collectTicker(currency)
+	influxClient, err := influx.NewInfluxClient(c.cfg.InfluxDB.Writer, c.cfg.InfluxDB.DB)
+	if err != nil {
+		return err
+	}
+
+	defer influxClient.Close()
+
+	for k, v := range c.cfg.Korbit.Currencies {
+		tickerRaw, err := c.collectTicker(v)
 		if err != nil {
 			return err
 		}
 
-		fmt.Printf("%s %+v\n", currency, tickerRaw)
+		c.addPoint(k, tickerRaw, influxClient)
+	}
+
+	err = influxClient.Write()
+	if err != nil {
+		return err
 	}
 
 	return nil
+}
+
+func (c *KorbitCollector) addPoint(currency string, v *korbitTickerRaw, influxClient *influx.InfluxClient) {
+	tags := map[string]string{}
+	tags["exchange"] = c.name
+	tags["currency"] = currency
+
+	fields := map[string]interface{}{}
+	fields["rate"] = v.GetRate()
+
+	influxClient.AddPoint("ticker", tags, fields, time.Now())
 }
 
 func (c *KorbitCollector) getAccessToken() (*korbitAccessTokenRaw, error) {

@@ -18,6 +18,7 @@ func main() {
 		fmt.Printf("Collector cannot run; %+v\n", err)
 		return
 	}
+
 	runner, err := collector.NewRunner(cfg)
 	if err != nil {
 		fmt.Printf("Collector cannot run; %+v\n", err)

@@ -44,5 +44,14 @@ func NewRunner(cfg *Config) (*Runner, error) {
 		runner.collectors = append(runner.collectors, c)
 	}
 
+	if cfg.Upbit.Enabled == true {
+		c, err := NewUpbitCollector(cfg)
+		if err != nil {
+			return nil, err
+		}
+
+		runner.collectors = append(runner.collectors, c)
+	}
+
 	return &runner, nil
 }

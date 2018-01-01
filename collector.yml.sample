@@ -10,8 +10,19 @@ korbit:
   username: << korbit email >> 
   password: << korbit password >> 
   currencies:
-   - btc_krw
-   - etc_krw
-   - eth_krw
-   - xrp_krw
-   - bch_krw
+   btc: btc_krw
+   etc: etc_krw
+   eth: eth_krw
+   xrp: xrp_krw
+   bch: bch_krw
+
+upbit:
+  enabled: true
+  interval: 10s
+  currencies:
+   btc: KRW-BTC
+   etc: KRW-ETC
+   eth: KRW-ETH
+   xrp: KRW-XRP
+   qtum: KRW-QTUM
+   btg: KRW-BTG

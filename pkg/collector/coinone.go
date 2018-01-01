@@ -54,7 +54,8 @@ func (c *CoinoneCollector) Run() {
 			c.logger.Printf("%+v\n", err)
 		}
 
-		time.Sleep(c.cfg.Coinone.GetInterval())
+		c.logger.Printf("updated.\n")
+		time.Sleep(c.cfg.Coinone.Interval)
 	}
 }
 
@@ -97,7 +98,7 @@ func (c *CoinoneCollector) addPoint(currency string, v coinoneTickerValueRaw, in
 	fields := map[string]interface{}{}
 	fields["rate"] = v.GetRate()
 
-	influxClient.AddPoint("rate", tags, fields, time.Now())
+	influxClient.AddPoint("ticker", tags, fields, time.Now())
 }
 
 func (c *CoinoneCollector) collectTicker() (*coinoneTickerRaw, error) {
