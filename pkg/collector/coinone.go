@@ -39,11 +39,11 @@ func (r coinoneTickerValueRaw) GetRate() float64 {
 }
 
 type CoinoneCollector struct {
-	cfg *CoinoneConfig
+	cfg *Config
 }
 
 func (c *CoinoneCollector) Collect() error {
-	influxClient, err := influx.NewInfluxClient("http://127.0.0.1:8086", "ticker")
+	influxClient, err := influx.NewInfluxClient(c.cfg.InfluxDB.Writer, c.cfg.InfluxDB.DB)
 	if err != nil {
 		return err
 	}
@@ -103,6 +103,6 @@ func (c *CoinoneCollector) collectTicker() (*coinoneTickerRaw, error) {
 	return &raw, nil
 }
 
-func NewCoinoneCollector(cfg *CoinoneConfig) (Collector, error) {
+func NewCoinoneCollector(cfg *Config) (Collector, error) {
 	return &CoinoneCollector{cfg}, nil
 }

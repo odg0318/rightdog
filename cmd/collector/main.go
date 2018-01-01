@@ -7,19 +7,23 @@ import (
 )
 
 func main() {
-	cfg := collector.CoinoneConfig{
-		Enabled:  true,
-		Interval: "10s",
+	cfg := collector.Config{
+		InfluxDB: collector.InfuxDBConfig{
+			Reader: "http://127.0.0.1:8086",
+			Writer: "http://127.0.0.1:8086",
+			DB:     "ticker",
+		},
+		Coinone: collector.CoinoneConfig{
+			Enabled:  true,
+			Interval: "10s",
+		},
 	}
-	collector, err := collector.NewCoinoneCollector(&cfg)
+
+	runner, err := collector.NewRunner(&cfg)
 	if err != nil {
-		fmt.Printf("%+v", err)
+		fmt.Printf("Collector cannot run; %+v\n", err)
 		return
 	}
 
-	err = collector.Collect()
-	if err != nil {
-		fmt.Printf("%+v", err)
-		return
-	}
+	runner.Run()
 }

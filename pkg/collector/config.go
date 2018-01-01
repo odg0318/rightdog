@@ -5,7 +5,14 @@ import (
 )
 
 type Config struct {
-	Coinone CoinoneConfig `yaml:"coinone"`
+	InfluxDB InfuxDBConfig `yaml:"influxdb"`
+	Coinone  CoinoneConfig `yaml:"coinone"`
+}
+
+type InfuxDBConfig struct {
+	Writer string `yaml:"writer"`
+	Reader string `yaml:"reader"`
+	DB     string `yaml:"db"`
 }
 
 type CoinoneConfig struct {
