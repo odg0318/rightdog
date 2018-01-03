@@ -1,0 +1,7 @@
+rest:
+  port: 24800 
+
+influxdb:
+  writer: http://influxdb:8086
+  reader: http://influxdb:8086
+  db: rightdog

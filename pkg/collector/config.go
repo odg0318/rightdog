@@ -8,10 +8,10 @@ import (
 )
 
 type Config struct {
-	InfluxDB InfuxDBConfig `yaml:"influxdb"`
-	Coinone  CoinoneConfig `yaml:"coinone"`
-	Korbit   KorbitConfig  `yaml:"korbit"`
-	Upbit    UpbitConfig   `yaml:"upbit"`
+	InfluxDB InfluxDBConfig `yaml:"influxdb"`
+	Coinone  CoinoneConfig  `yaml:"coinone"`
+	Korbit   KorbitConfig   `yaml:"korbit"`
+	Upbit    UpbitConfig    `yaml:"upbit"`
 
 	validated bool
 }
@@ -34,7 +34,7 @@ func (c *Config) Validate() error {
 	return nil
 }
 
-type InfuxDBConfig struct {
+type InfluxDBConfig struct {
 	Writer string `yaml:"writer"`
 	Reader string `yaml:"reader"`
 	DB     string `yaml:"db"`
