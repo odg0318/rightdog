@@ -16,7 +16,7 @@ func main() {
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:   "config",
-			EnvVar: "Writer_CONFIG",
+			EnvVar: "WRITER_CONFIG",
 			Usage:  "Configuration file path",
 			Value:  "../../writer.yml",
 		},
