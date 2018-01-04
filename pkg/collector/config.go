@@ -1,6 +1,7 @@
 package collector
 
 import (
+	"errors"
 	"io/ioutil"
 	"time"
 
@@ -8,20 +9,15 @@ import (
 )
 
 type Config struct {
-	InfluxDB InfluxDBConfig `yaml:"influxdb"`
-	Coinone  CoinoneConfig  `yaml:"coinone"`
-	Korbit   KorbitConfig   `yaml:"korbit"`
-	Upbit    UpbitConfig    `yaml:"upbit"`
+	Writer WriterConfig `yaml:"writer"`
+
+	Upbit UpbitConfig `yaml:"upbit"`
 
 	validated bool
 }
 
 func (c *Config) Validate() error {
-	if err := c.Coinone.Validate(); err != nil {
-		return err
-	}
-
-	if err := c.Korbit.Validate(); err != nil {
+	if err := c.Writer.Validate(); err != nil {
 		return err
 	}
 
@@ -34,61 +30,16 @@ func (c *Config) Validate() error {
 	return nil
 }
 
-type InfluxDBConfig struct {
-	Writer string `yaml:"writer"`
-	Reader string `yaml:"reader"`
-	DB     string `yaml:"db"`
+type WriterConfig struct {
+	Addr string `yaml:"addr"`
 }
 
-type CoinoneConfig struct {
-	Enabled     bool   `yaml:"enabled"`
-	RawInterval string `yaml:"interval"`
-
-	Interval time.Duration `yaml:"_,omitempty"`
-}
-
-func (c *CoinoneConfig) Validate() error {
-	if c.Enabled == false {
-		return nil
-	}
-
-	var err error
-	c.Interval, err = time.ParseDuration(c.RawInterval)
-	if err != nil {
-		return err
+func (c *WriterConfig) Validate() error {
+	if len(c.Addr) == 0 {
+		return errors.New("writer addr is empty in config")
 	}
 
 	return nil
-}
-
-type KorbitConfig struct {
-	Enabled     bool              `yaml:"enabled"`
-	RawInterval string            `yaml:"interval"`
-	Auth        KorbitAuthConfig  `yaml:"auth"`
-	Currencies  map[string]string `yaml:"currencies"`
-
-	Interval time.Duration `yaml:"_,omitempty"`
-}
-
-func (c *KorbitConfig) Validate() error {
-	if c.Enabled == false {
-		return nil
-	}
-
-	var err error
-	c.Interval, err = time.ParseDuration(c.RawInterval)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-type KorbitAuthConfig struct {
-	ClientId     string `yaml:"client_id"`
-	ClientSecret string `yaml:"client_secret"`
-	Username     string `yaml:"username"`
-	Password     string `yaml:"password"`
 }
 
 type UpbitConfig struct {

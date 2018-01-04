@@ -1,25 +1,5 @@
-influxdb:
-  writer: http://influxdb:8086
-  reader: http://influxdb:8086
-  db: rightdog
-
-coinone:
-  enabled: true
-  interval: 10s
-
-korbit:
-  enabled: true
-  interval: 10s
-  client_id: << korbit client id >> 
-  client_secret: << korbit client secret >> 
-  username: << korbit email >> 
-  password: << korbit password >> 
-  currencies:
-   btc: btc_krw
-   etc: etc_krw
-   eth: eth_krw
-   xrp: xrp_krw
-   bch: bch_krw
+writer:
+  addr: http://writer:24800
 
 upbit:
   enabled: true

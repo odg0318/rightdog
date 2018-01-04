@@ -8,20 +8,24 @@ import (
 	"net/http"
 	"os"
 	"time"
-
-	"rightdog/pkg/collector/influx"
 )
 
+//[{"code":"CRIX.UPBIT.KRW-BTC","candleDateTime":"2018-01-03T19:59:00+00:00","candleDateTimeKst":"2018-01-04T04:59:00+09:00","openingPrice":20349000.00000000,"highPrice":20350000.00000000,"lowPrice":20320000.00000000,"tradePrice":20331000.00000000,"candleAccTradeVolume":10.57938696,"candleAccTradePrice":215157469.67828000,"timestamp":1515009599203,"unit":1} ]
 type upbitTickerRaw struct {
 	Code         string  `json:"code"`
 	OpeningPrice float64 `json:"openingPrice"`
 	HighPrice    float64 `json:"highPrice"`
 	LowPrice     float64 `json:"lowPrice"`
 	TradePrice   float64 `json:"tradePrice"`
+	Timestamp    int64   `json:"timestamp"`
 }
 
-func (r *upbitTickerRaw) GetRate() float64 {
+func (r *upbitTickerRaw) GetPrice() float64 {
 	return r.TradePrice
+}
+
+func (r *upbitTickerRaw) GetTime() time.Time {
+	return time.Unix(r.Timestamp, 0)
 }
 
 type UpbitCollector struct {
@@ -44,39 +48,23 @@ func (c *UpbitCollector) Run() {
 }
 
 func (c *UpbitCollector) Collect() error {
-	influxClient, err := influx.NewInfluxClient(c.cfg.InfluxDB.Writer, c.cfg.InfluxDB.DB)
-	if err != nil {
-		return err
-	}
+	writer := NewWriterClient(c.cfg.Writer)
 
-	defer influxClient.Close()
-
-	for k, v := range c.cfg.Upbit.Currencies {
+	for currency, v := range c.cfg.Upbit.Currencies {
 		tickerRaw, err := c.collectTicker(v)
 		if err != nil {
-			return err
+			c.logger.Printf("collecting failed; %+v", err)
+			continue
 		}
 
-		c.addPoint(k, tickerRaw, influxClient)
-	}
-
-	err = influxClient.Write()
-	if err != nil {
-		return err
+		err = writer.PostTicker(c.name, currency, tickerRaw.GetPrice(), tickerRaw.GetTime())
+		if err != nil {
+			c.logger.Printf("writing failed; %+v", err)
+			continue
+		}
 	}
 
 	return nil
-}
-
-func (c *UpbitCollector) addPoint(currency string, v *upbitTickerRaw, influxClient *influx.InfluxClient) {
-	tags := map[string]string{}
-	tags["exchange"] = c.name
-	tags["currency"] = currency
-
-	fields := map[string]interface{}{}
-	fields["rate"] = v.GetRate()
-
-	influxClient.AddPoint("ticker", tags, fields, time.Now())
 }
 
 func (c *UpbitCollector) collectTicker(currency string) (*upbitTickerRaw, error) {

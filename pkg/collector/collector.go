@@ -26,24 +26,6 @@ func (r *Runner) Run() {
 func NewRunner(cfg *Config) (*Runner, error) {
 	runner := Runner{}
 
-	if cfg.Coinone.Enabled == true {
-		c, err := NewCoinoneCollector(cfg)
-		if err != nil {
-			return nil, err
-		}
-
-		runner.collectors = append(runner.collectors, c)
-	}
-
-	if cfg.Korbit.Enabled == true {
-		c, err := NewKorbitCollector(cfg)
-		if err != nil {
-			return nil, err
-		}
-
-		runner.collectors = append(runner.collectors, c)
-	}
-
 	if cfg.Upbit.Enabled == true {
 		c, err := NewUpbitCollector(cfg)
 		if err != nil {
