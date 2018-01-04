@@ -40,8 +40,8 @@ func (r *Rest) PostTicker(c *gin.Context) {
 
 	tags := map[string]string{}
 	tags["exchange"] = param.Exchange
-	tags["from"] = param.From
-	tags["to"] = param.To
+	tags["fromcurrency"] = param.From
+	tags["tocurrency"] = param.To
 
 	fields := map[string]interface{}{}
 	fields["price"] = param.Price
