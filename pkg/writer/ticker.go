@@ -2,6 +2,7 @@ package writer
 
 import (
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -39,9 +40,9 @@ func (r *Rest) PostTicker(c *gin.Context) {
 	defer influxClient.Close()
 
 	tags := map[string]string{}
-	tags["exchange"] = param.Exchange
-	tags["fromcurrency"] = param.From
-	tags["tocurrency"] = param.To
+	tags["exchange"] = strings.ToLower(param.Exchange)
+	tags["fromcurrency"] = strings.ToLower(param.From)
+	tags["tocurrency"] = strings.ToLower(param.To)
 
 	fields := map[string]interface{}{}
 	fields["price"] = param.Price
