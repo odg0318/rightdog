@@ -25,7 +25,7 @@ func (r *upbitTickerRaw) GetPrice() float64 {
 }
 
 func (r *upbitTickerRaw) GetTime() time.Time {
-	return time.Unix(r.Timestamp, 0)
+	return time.Unix(r.Timestamp/1000, 0)
 }
 
 type UpbitCollector struct {
