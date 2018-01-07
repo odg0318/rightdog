@@ -58,8 +58,8 @@ func (c *UpbitCollector) Collect() error {
 			continue
 		}
 
-		latency := float64(time.Since(now) / time.Second)
-		if latency <= 0 {
+		latency := time.Since(now).Seconds()
+		if latency > 0 {
 			err = writer.PostLatency(c.name, latency)
 			if err != nil {
 				c.logger.Printf("writing failed; %+v", err)
