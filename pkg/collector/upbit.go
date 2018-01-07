@@ -51,10 +51,19 @@ func (c *UpbitCollector) Collect() error {
 	writer := NewWriterClient(c.cfg.Writer)
 
 	for currency, v := range c.cfg.Upbit.Currencies {
+		now := time.Now()
 		tickerRaw, err := c.collectTicker(v)
 		if err != nil {
 			c.logger.Printf("collecting failed; %+v", err)
 			continue
+		}
+
+		latency := float64(time.Since(now) / time.Second)
+		if latency <= 0 {
+			err = writer.PostLatency(c.name, latency)
+			if err != nil {
+				c.logger.Printf("writing failed; %+v", err)
+			}
 		}
 
 		err = writer.PostTicker(c.name, currency, tickerRaw.GetPrice(), tickerRaw.GetTime())

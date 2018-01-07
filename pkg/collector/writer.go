@@ -40,7 +40,37 @@ func (c *WriterClient) PostTicker(exchange string, currency string, price float6
 	}
 
 	if res.StatusCode != http.StatusOK {
-		return errors.New(fmt.Sprintf("POST /ticker failed; %s", string(resBody)))
+		return errors.New(fmt.Sprintf("POST %s failed; %s", url, string(resBody)))
+	}
+
+	return nil
+}
+
+func (c *WriterClient) PostLatency(exchange string, latency float64) error {
+	url := fmt.Sprintf("%s/latency", c.cfg.Addr)
+	values := map[string]interface{}{
+		"exchange": exchange,
+		"latency":  latency,
+	}
+
+	marshaledJson, err := json.Marshal(values)
+	if err != nil {
+		return err
+	}
+
+	res, err := http.Post(url, "application/json", bytes.NewBuffer(marshaledJson))
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+
+	resBody, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return err
+	}
+
+	if res.StatusCode != http.StatusOK {
+		return errors.New(fmt.Sprintf("POST %s failed; %s", url, string(resBody)))
 	}
 
 	return nil

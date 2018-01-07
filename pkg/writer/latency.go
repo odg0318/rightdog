@@ -10,7 +10,7 @@ import (
 
 type PostLatencyParam struct {
 	Exchange string  `json:"exchange" binding:"required"`
-	Latency  float64 `json:"latency" binding:"required"`
+	Latency  float64 `json:"latency"`
 }
 
 func (r *Rest) PostLatency(c *gin.Context) {
@@ -20,8 +20,11 @@ func (r *Rest) PostLatency(c *gin.Context) {
 		return
 	}
 
-	if param.Latency < 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "latency must be larger than 0"})
+	// status ok returns when latency is zero.
+	if param.Latency <= 0 {
+		c.JSON(http.StatusOK, gin.H{
+			"status": "ok",
+		})
 		return
 	}
 
