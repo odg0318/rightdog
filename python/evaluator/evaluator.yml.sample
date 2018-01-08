@@ -1,5 +1,5 @@
 slack:
-  token: 'xoxb-295433874595-BNaxvBQKLiA6BFI1gAhQvvE4'
+  token: << SLACK API TOKEN >> 
   channel: '#general'
 
 exchange:
@@ -9,4 +9,4 @@ exchange:
    - 'upbit'
 
 trade:
-  interval: 10
+  interval: 30 

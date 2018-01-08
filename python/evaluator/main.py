@@ -22,11 +22,11 @@ def main():
     exchanges = config['exchange']['ko']
 
     while True:
-        search_exchanges(exchanges)
+        process_korean_arbitrage(exchanges)
         time.sleep(config['trade']['interval'])
 
 
-def search_exchanges(exchanges):
+def process_korean_arbitrage(exchanges):
     for exchange in exchanges:
         data = make_data_from_db(exchange)
 
@@ -41,7 +41,7 @@ def search_exchanges(exchanges):
                     continue
 
                 gap_rate = caculate_gap_rate(base_price, prices[e])
-                if gap_rate > 0:
+                if gap_rate > 3.:
                     message = 'base / %s / %d\ntarget / %s / %d\ngap / %f' % (exchange, base_price, e, prices[e], gap_rate)
                     slack.chat.post_message(config['slack']['channel'], message)
 
