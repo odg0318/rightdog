@@ -1,0 +1,12 @@
+slack:
+  token: 'xoxb-295433874595-BNaxvBQKLiA6BFI1gAhQvvE4'
+  channel: '#general'
+
+exchange:
+  ko:
+   - 'korbit'
+   - 'coinone'
+   - 'upbit'
+
+trade:
+  interval: 10

@@ -1,20 +1,38 @@
 import sys
+import os
+import yaml
+import time
+
 from influxdb import InfluxDBClient
+from slacker import Slacker
 
 
-exchanges = ['korbit', 'coinone', 'upbit']
+config = {}
+slack = None
+
 
 def main():
-    for exchange in exchanges:
-        print '- %s' % exchange
+    global config
+    global slack
 
+    config_path = os.getenv('EVALUATOR_CONFIG', 'evaluator.yml')
+    config = yaml.load(file(config_path, 'r'))
+
+    slack = Slacker(config['slack']['token'])
+    exchanges = config['exchange']['ko']
+
+    while True:
+        search_exchanges(exchanges)
+        time.sleep(config['trade']['interval'])
+
+
+def search_exchanges(exchanges):
+    for exchange in exchanges:
         data = make_data_from_db(exchange)
 
         for currency, prices in data.items():
             if len(prices) == 1:
                 continue
-
-            print '# base', currency, prices[exchange]
 
             base_price = prices[exchange]
 
@@ -24,7 +42,8 @@ def main():
 
                 gap_rate = caculate_gap_rate(base_price, prices[e])
                 if gap_rate > 0:
-                    print e, prices[e], caculate_gap_rate(base_price, prices[e])
+                    message = 'base / %s / %d\ntarget / %s / %d\ngap / %f' % (exchange, base_price, e, prices[e], gap_rate)
+                    slack.chat.post_message(config['slack']['channel'], message)
 
 
 def make_data_from_db(exchange):
