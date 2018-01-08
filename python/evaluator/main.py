@@ -27,29 +27,29 @@ def main():
 
 
 def process_korean_arbitrage(exchanges):
-    for exchange in exchanges:
-        data = make_data_from_db(exchange)
+    for base_exchange in exchanges:
+        data = make_data_from_db(base_exchange, exchanges)
 
         for currency, prices in data.items():
             if len(prices) == 1:
                 continue
 
-            base_price = prices[exchange]
+            base_price = prices[base_exchange]
 
             for e in prices.keys():
-                if e == exchange:
+                if e == base_exchange:
                     continue
 
                 gap_rate = caculate_gap_rate(base_price, prices[e])
                 if gap_rate >= 3.0:
-                    message = 'base / %s / %d\ntarget / %s / %d\ngap / %f' % (exchange, base_price, e, prices[e], gap_rate)
+                    message = 'base / %s / %d\ntarget / %s / %d\ngap / %f' % (base_exchange, base_price, e, prices[e], gap_rate)
                     slack.chat.post_message(config['slack']['channel'], message)
 
 
-def make_data_from_db(exchange):
+def make_data_from_db(base_exchange, exchanges):
     client = InfluxDBClient(host='127.0.0.1', port=8086, database='rightdog')
 
-    query = "SHOW TAG VALUES FROM ticker WITH KEY = fromcurrency WHERE exchange = '%s' AND time > now() - 10m" % exchange
+    query = "SHOW TAG VALUES FROM ticker WITH KEY = fromcurrency WHERE exchange = '%s' AND time > now() - 10m" % base_exchange
     result = client.query(query)
 
     data = {}
