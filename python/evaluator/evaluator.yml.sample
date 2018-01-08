@@ -9,4 +9,7 @@ exchange:
    - 'upbit'
 
 trade:
-  interval: 30 
+  interval: 60 
+  korean:
+    exclude_currency:
+      - 'btg'

@@ -31,6 +31,9 @@ def process_korean_arbitrage(exchanges):
         data = make_data_from_db(base_exchange, exchanges)
 
         for currency, prices in data.items():
+            if currency in config['trade']['korean']['exclude_currency']:
+                continue
+
             if len(prices) == 1:
                 continue
 
