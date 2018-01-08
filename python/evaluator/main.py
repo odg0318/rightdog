@@ -43,7 +43,7 @@ def process_korean_arbitrage(exchanges):
                 if target_exchange == base_exchange:
                     continue
 
-                target_price = prices[target_price]
+                target_price = prices[target_exchange]
 
                 gap_rate = caculate_gap_rate(base_price, target_price)
                 if gap_rate >= 3.0:
