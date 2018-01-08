@@ -41,7 +41,7 @@ def process_korean_arbitrage(exchanges):
                     continue
 
                 gap_rate = caculate_gap_rate(base_price, prices[e])
-                if gap_rate > 3.:
+                if gap_rate >= 3.0:
                     message = 'base / %s / %d\ntarget / %s / %d\ngap / %f' % (exchange, base_price, e, prices[e], gap_rate)
                     slack.chat.post_message(config['slack']['channel'], message)
 
