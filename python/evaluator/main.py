@@ -27,9 +27,6 @@ def main():
 
 
 def process_korean_arbitrage(exchanges):
-    message = '*Korean arbitrage is evaluating...*'
-    slack.chat.post_message(config['slack']['channel'], message)
-
     attachment = {
         'color': '#36a64f',
         'pretext': 'Korean arbitrage is evaluating...',
