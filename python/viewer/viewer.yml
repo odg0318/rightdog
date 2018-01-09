@@ -1,0 +1,21 @@
+influxdb:
+  host: '127.0.0.1'
+  port: 8086
+  database: 'rightdog'
+
+exchange:
+  ko:
+   - 'coinone'
+   - 'korbit'
+   - 'upbit'
+
+currency:
+  ko:
+   - 'btc'
+   - 'etc'
+   - 'eth'
+
+except:
+  ko:
+    korbit:
+     - 'etc'

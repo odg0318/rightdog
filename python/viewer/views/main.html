@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div id="ko">
+  <table class="table table-dark">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        {% for exchange in exchanges %}
+        <th scope="col">{{ exchange }}</th>
+        {% end %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for currency in currencies %}
+      <tr>
+        <th scope="col">{{ currency }}</th>
+        {% for exchange in exchanges %}
+          {% set d = data[currency][exchange] %}
+          {% if d['is_min'] %}
+          <td class="bg-danger">{{ d['price'] }}</td>
+          {% elif d['is_max'] %}
+          <td class="bg-success">{{ d['price'] }} ({{ round(d['gap_rate'], 2) }}%)</td>
+          {% else %}
+          <td>{{ d['price'] }} ({{ round(d['gap_rate'], 2) }}%)</td>
+          {% end %}
+        {% end %}
+      </tr>
+      {% end %}
+    </tbody>
+  </table>
+</div>
+{% end %}

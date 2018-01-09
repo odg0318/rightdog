@@ -7,6 +7,9 @@ build-writer:
 build-evaluator:
 	docker build -f - -t evaluator python/evaluator/ < docker/evaluator/Dockerfile
 
+build-viewer:
+	docker build -f - -t viewer python/viewer/ < docker/viewer/Dockerfile
+
 docker-influxdb:
 	docker run -d --net=host --name=influxdb influxdb:1.4.2
 
