@@ -14,6 +14,7 @@ func (r *Rest) Run() error {
 	router := gin.Default()
 	router.POST("/ticker", r.PostTicker)
 	router.POST("/latency", r.PostLatency)
+	router.POST("/transaction", r.PostTransaction)
 
 	return router.Run(fmt.Sprintf(":%d", r.cfg.Rest.Port))
 }
