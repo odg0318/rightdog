@@ -1,33 +1,54 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<div id="ko">
-  <table class="table table-dark">
-    <thead>
-      <tr>
-        <th scope="col">#</th>
-        {% for exchange in exchanges %}
-        <th scope="col">{{ exchange }}</th>
-        {% end %}
-      </tr>
-    </thead>
-    <tbody>
-      {% for currency in currencies %}
-      <tr>
-        <th scope="col">{{ currency }}</th>
-        {% for exchange in exchanges %}
-          {% set d = data[currency][exchange] %}
-          {% if d['is_min'] %}
-          <td class="bg-danger">{{ d['price'] }}</td>
-          {% elif d['is_max'] %}
-          <td class="bg-success">{{ d['price'] }} ({{ round(d['gap_rate'], 2) }}%)</td>
-          {% else %}
-          <td>{{ d['price'] }} ({{ round(d['gap_rate'], 2) }}%)</td>
-          {% end %}
-        {% end %}
-      </tr>
-      {% end %}
-    </tbody>
-  </table>
-</div>
+<div id="ko_exchange"></div>
+<div id="premium_exchange"></div>
+{% end %}
+
+{% block script %}
+<script type="text/javascript">
+function makeTable(res) {
+        var table = $('<table></table>').addClass('table').addClass('table-dark').addClass('table-sm');
+        var thead = $('<thead></thead>')
+
+        thead.append($('<th></th>').attr('scope', 'col').text('#'));
+        $.each(res['exchanges'], function(i, exchange) {
+                thead.append($('<th></th>').attr('scope', 'col').text(exchange));
+        });
+        table.append(thead);
+
+        var tbody = $('<tbody></tbody>');
+        $.each(res['currencies'], function(i, currency) {
+                var row = $('<tr></tr>');
+                row.append($('<th></th>').attr('scope', 'row').text(currency));
+                $.each(res['exchanges'], function(i, exchange) {
+                        var c = res['data'][currency][exchange];
+                        var text = '{0} ({1}%)'.format(Math.round(c['price']), Math.round(c['gap_rate'] * 100) / 100);
+                        var col = $('<th></th>').attr('scope', 'row').text(text).on('click', function() {
+                        });
+
+                        if (c['is_max'] == true) { col.addClass('bg-success'); }
+                        if (c['is_min'] == true) { col.addClass('bg-danger'); }
+
+                        row.append(col);
+                });
+                tbody.append(row);
+        });
+
+        table.append(tbody);
+
+        return table
+}
+$(function() {
+        $.get('/api/price?exchanges=upbit,korbit,coinone&currencies=btc,etc,eth', function(res) {
+                var table = makeTable(res);
+                $('#ko_exchange').append(table);
+        })
+
+        $.get('/api/price?exchanges=binance,upbit,korbit&currencies=btc,etc,eth', function(res) {
+                var table = makeTable(res);
+                $('#premium_exchange').append(table);
+        })
+})
+</script>
 {% end %}

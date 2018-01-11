@@ -1,16 +1,17 @@
+import os
 import yaml
 
 import tornado.ioloop
 import tornado.web
 from tornado.options import define, options, parse_command_line
 
-import evaluator
+from api import ApiGetPriceHandler
 
+import evaluator
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
-        data = evaluator.make_data_from_db(options.config['exchange']['ko'], options.config['currency']['ko'])
-        self.render('views/main.html', data=data, exchanges=options.config['exchange']['ko'], currencies=options.config['currency']['ko'])
+        self.render('views/main.html')
 
 
 def make_app():
@@ -23,7 +24,9 @@ def make_app():
 
     return tornado.web.Application([
         (r"/", MainHandler),
-    ])
+        (r'/static/(.*)', tornado.web.StaticFileHandler, {'path': os.path.join(os.path.dirname(__file__), 'static')}),
+        (r"/api/price", ApiGetPriceHandler),
+    ], autoreload=True)
 
 
 if __name__ == '__main__':
