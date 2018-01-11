@@ -2,3 +2,4 @@ Gopkg.lock
 *.swp
 collector.yml
 data
+*.pyc
