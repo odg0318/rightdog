@@ -23,12 +23,16 @@ function makeTable(res) {
                 row.append($('<th></th>').attr('scope', 'row').text(currency));
                 $.each(res['exchanges'], function(i, exchange) {
                         var c = res['data'][currency][exchange];
-                        var text = '{0}<br />({1}%)'.format(Math.round(c['price']), Math.round(c['gap_rate'] * 100) / 100);
-                        var col = $('<th></th>').attr('scope', 'row').html(text).on('click', function() {
-                        });
+                        var text = '-<br />-'
+                        if (c !== undefined) {
+                                text = '{0}<br />({1}%)'.format(Math.round(c['price']), Math.round(c['gap_rate'] * 100) / 100);
+                        }       
+                        var col = $('<th></th>').attr('scope', 'row').html(text).on('click', function() { });
 
-                        if (c['is_max'] == true) { col.addClass('bg-success'); }
-                        if (c['is_min'] == true) { col.addClass('bg-danger'); }
+                        if (c !== undefined) {
+                                if (c['is_max'] == true) { col.addClass('bg-success'); }
+                                if (c['is_min'] == true) { col.addClass('bg-danger'); }
+                        }
 
                         row.append(col);
                 });
@@ -45,7 +49,7 @@ $(function() {
                 $('#ko_exchange').append(table);
         })
 
-        $.get('/api/price?exchanges=binance,upbit,korbit&currencies=btc,etc,eth', function(res) {
+        $.get('/api/price?exchanges=binance,upbit,korbit&currencies=btc,etc,eth,bch,tix,storj,snt,powr', function(res) {
                 var table = makeTable(res);
                 $('#premium_exchange').append(table);
         })

@@ -22,10 +22,16 @@ def make_data_from_db(exchanges, currencies):
                 'price': price
             }
 
+        if len(data[currency]) == 0:
+            continue
+
         min_price = min([y['price'] for x, y in data[currency].iteritems()])
         max_price = max([y['price'] for x, y in data[currency].iteritems()])
 
         for exchange in exchanges:
+            if exchange not in data[currency]:
+                continue
+
             data[currency][exchange]['gap_rate'] = calculate_gap_rate(min_price, data[currency][exchange]['price'])
             data[currency][exchange]['is_min'] = min_price == data[currency][exchange]['price']
             data[currency][exchange]['is_max'] = max_price == data[currency][exchange]['price']
