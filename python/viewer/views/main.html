@@ -23,8 +23,8 @@ function makeTable(res) {
                 row.append($('<th></th>').attr('scope', 'row').text(currency));
                 $.each(res['exchanges'], function(i, exchange) {
                         var c = res['data'][currency][exchange];
-                        var text = '{0} ({1}%)'.format(Math.round(c['price']), Math.round(c['gap_rate'] * 100) / 100);
-                        var col = $('<th></th>').attr('scope', 'row').text(text).on('click', function() {
+                        var text = '{0}<br />({1}%)'.format(Math.round(c['price']), Math.round(c['gap_rate'] * 100) / 100);
+                        var col = $('<th></th>').attr('scope', 'row').html(text).on('click', function() {
                         });
 
                         if (c['is_max'] == true) { col.addClass('bg-success'); }
