@@ -10,7 +10,7 @@ def make_data_from_db(exchanges, currencies):
 
     data = {}
     for currency in currencies:
-        query = "SELECT LAST(price) FROM ticker WHERE fromcurrency = '%s' AND exchange =~ /%s/  GROUP BY exchange" % (currency, '|'.join(exchanges))
+        query = "SELECT LAST(price) FROM ticker WHERE time > now() - 1m AND fromcurrency = '%s' AND exchange =~ /%s/  GROUP BY exchange" % (currency, '|'.join(exchanges))
         result = client.query(query)
 
         data[currency] = {}
