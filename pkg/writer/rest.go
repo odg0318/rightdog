@@ -13,6 +13,7 @@ type Rest struct {
 func (r *Rest) Run() error {
 	router := gin.Default()
 	router.POST("/ticker", r.PostTicker)
+	router.POST("/tickers", r.PostTickers)
 	router.POST("/latency", r.PostLatency)
 	router.POST("/transaction", r.PostTransaction)
 
